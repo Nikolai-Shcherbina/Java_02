@@ -27,16 +27,14 @@ public class Main {
     // task 1: преобразует строку в двумерный массив типа String[][]
     public static String[][] transformsArray(String s) {
         String[] arr = s.split("\n");
-        String[][] twoDimensionalArray = new String[arr.length][arr.length];
-        try{
-            if (twoDimensionalArray.length != 4) throw new ArrayIndexOutOfBoundsException ("размер матрицы, полученной из строки, не равен 4x4");
-            for (int i = 0; i < arr.length; i++) {
-                twoDimensionalArray[i] = arr[i].split(" ");
-            }
-        }catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("размер матрицы, полученной из строки, не равен 4x4");
-        }
 
+        if (arr.length != 4) throw new ArrayIndexOutOfBoundsException("размер матрицы, полученной из строки, не равен 4x4");
+        String[][] twoDimensionalArray = {
+                arr[0].split(" "),
+                arr[1].split(" "),
+                arr[2].split(" "),
+                arr[3].split(" "),
+        };
         return twoDimensionalArray;
     }
 
