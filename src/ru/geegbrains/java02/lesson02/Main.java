@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    // task 1
+    // task 1: преобразует строку в двумерный массив типа String[][]
     public static String[][] transformsArray(String s) {
         String[] arr = s.split("\n");
         String[][] twoDimensionalArray = new String[arr.length][];
@@ -34,7 +34,7 @@ public class Main {
         return twoDimensionalArray;
     }
 
-    // task 2
+    // task: преобразует 2 все элементы массива в числа типа int
     public static int[][] transformsInt(String[][] arr) {
         int[][] intArr = new int[4][4];
         for (int i = 0; i < arr.length; i++) {
@@ -45,16 +45,16 @@ public class Main {
         return intArr;
     }
 
-    // task 2: просуммировать, поделить полученную сумму на 2, и вернуть результат
-
-    public static int sumDevNumbArr(int [][] arr){
+    // task 2: суммирует, делит полученную сумму на 2, и возвращает результат
+    public static int sumDevNumbArr(int[][] arr) {
         int summ = 0;
         int result;
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length; j++) {
                 summ += arr[i][j];
             }
-        } result = summ / 2;
+        }
+        result = summ / 2;
         return result;
     }
 
@@ -63,16 +63,10 @@ public class Main {
         String[][] strArray;
         int[][] intArray;
 
-        strArray = transformsArray(str); // task 1
-        System.out.println(Arrays.deepToString(strArray));
-        System.out.println("--------------------------------");
+        strArray = transformsArray(str);
+        intArray = transformsInt(strArray);
+        System.out.println(sumDevNumbArr(intArray));
 
-        intArray = transformsInt(strArray); // task 2
-        System.out.println(Arrays.deepToString(intArray));
-        System.out.println("--------------------------------");
-
-        System.out.println(sumDevNumbArr(intArray)); // task 2
-        System.out.println("--------------------------------");
 
     }
 }
