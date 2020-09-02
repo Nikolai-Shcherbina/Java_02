@@ -23,55 +23,76 @@ import java.util.Arrays;
  */
 
 public class Main {
+    private static final class RowMismatchException extends RuntimeException {
+        RowMismatchException(String message) {
+            super("Rows exception: " + message);
+        }
+    }
+
+    private static final class ColumnMismatchException extends RuntimeException {
+        ColumnMismatchException(String message) {
+            super("Columns exception: " + message);
+        }
+    }
+
+    private static final class NumberIsNotNumberException extends RuntimeException {
+        NumberIsNotNumberException(String message) {
+            super("Not a number found: " + message);
+        }
+    }
+
+    private static final String CORRECT_STRING = "1 3 1 2\n2 3 2 2\n5 6 7 1\n3 3 1 0";
+    private static final String EXTRA_ROW_STRING = "1 3 1 2\n2 3 2 2\n5 6 7 1\n3 3 1 0\n1 2 3 4";
+    private static final String EXTRA_COL_STRING = "1 3 1 2 1\n2 3 2 2 1\n5 6 7 1 1\n3 3 1 0 1";
+    private static final String NO_ROW_STRING = "1 3 1 2\n2 3 2 2\n5 6 7 1";
+    private static final String NO_COL_STRING = "10 3 1 2\n2 3 2 2\n5 6 7 1\n300 3 1 0";
+    private static final String HAS_CHAR_STRING = "1 3 1 2\n2 3 2 2\n5 6 7 1\n3 3 1 A";
+
+    private static final int MATRIX_ROWS = 4;
+    private static final int MATRIX_COLS = 4;
 
     // task 1: преобразует строку в двумерный массив типа String[][]
-    public static String[][] transformsArray(String s) {
+    private static String[][] transformsArray(String s) {
         String[] arr = s.split("\n");
+        if (arr.length != MATRIX_ROWS)
+            throw new RowMismatchException(arr.length + ":\n" + s);
 
-        if (arr.length != 4) throw new ArrayIndexOutOfBoundsException("размер матрицы, полученной из строки, не равен 4x4");
-        String[][] twoDimensionalArray = {
-                arr[0].split(" "),
-                arr[1].split(" "),
-                arr[2].split(" "),
-                arr[3].split(" "),
-        };
+        String[][] twoDimensionalArray = new String[MATRIX_ROWS][];
+        for (int i = 0; i < arr.length; i++) {
+            twoDimensionalArray[i] = arr[i].split(" ");
+            if (arr.length != MATRIX_COLS)
+                throw new ColumnMismatchException(twoDimensionalArray[i].length + ":\n" + s);
+        }
         return twoDimensionalArray;
     }
 
-    // task: преобразует 2 все элементы массива в числа типа int
-    public static int[][] transformsInt(String[][] arr) {
-        int[][] intArr = new int[arr.length][arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr.length; j++) {
-                intArr[i][j] = Integer.parseInt(arr[i][j]);
+    private static float calcMatrix(String[][] matrix) {
+        int result = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                try {
+                    result += Integer.parseInt(matrix[i][j]);
+                } catch (NumberFormatException e) {
+                    throw new NumberIsNotNumberException(matrix[i][j]);
+                }
             }
         }
-        return intArr;
-    }
-
-    // task 2: суммирует, делит полученную сумму на 2, и возвращает результат
-    public static int sumDevNumbArr(int[][] arr) {
-        int summ = 0;
-        int result;
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr.length; j++) {
-                summ += arr[i][j];
-            }
-        }
-        result = summ / 2;
-        return result;
+        return result / 2f;
     }
 
     public static void main(String[] args) {
-        String str = "10 3 1 2\n2 3 2 2\n5 6 7 1\n300 3 1 0";
-        String[][] strArray;
-        int[][] intArray;
-
-        strArray = transformsArray(str);
-        intArray = transformsInt(strArray);
-        System.out.println(sumDevNumbArr(intArray));
-
-
+        try {
+//            final String[][] matrix = transformsArray(CORRECT_STRING);
+//            final String[][] matrix = transformsArray(NO_ROW_STRING);
+         final String[][] matrix = transformsArray(NO_COL_STRING);
+            // final String[][] matrix = transformsArray(HAS_CHAR_STRING);
+            System.out.println(Arrays.deepToString(matrix));
+            System.out.println("Half sum = " + calcMatrix(matrix));
+        } catch (NumberIsNotNumberException e) {
+            System.out.println("A NumberFormatException is thrown: " + e.getMessage());
+        } catch (RowMismatchException | ColumnMismatchException e) {
+            System.out.println("A RuntimeException successor is thrown: " + e.getMessage());
+        }
     }
 }
 
