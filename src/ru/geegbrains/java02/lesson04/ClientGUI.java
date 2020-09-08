@@ -66,7 +66,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         add(panelTop, BorderLayout.NORTH);
         add(panelBottom, BorderLayout.SOUTH);
 
-        btnSend.addActionListener(this);
+        btnSend.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!tfMessage.getText().isEmpty()) {
+                    sendsMessage();
+                }
+                tfMessage.grabFocus();
+            }
+        });
 
 
         setVisible(true);
@@ -77,8 +85,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         Object src = e.getSource();
         if (src == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
-        } else if(src == btnSend){
-         // ????
         }else {
             throw new RuntimeException("Unknown source: " + src);
         }
@@ -96,9 +102,11 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         System.exit(1);
     }
 
-    public static void saveLog(String s) {
 
-        System.out.println();
+    public void sendsMessage() {
+        String msg = tfMessage.getText();
+        log.setText(msg);
+        tfMessage.setText("");
     }
 
 
