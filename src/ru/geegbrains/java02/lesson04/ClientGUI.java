@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
 
@@ -85,7 +88,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         Object src = e.getSource();
         if (src == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
-        }else {
+        } else {
             throw new RuntimeException("Unknown source: " + src);
         }
     }
@@ -102,13 +105,28 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         System.exit(1);
     }
 
+    FileOutputStream fos;
+
+    {
+        try {
+            fos = new FileOutputStream("logFile.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void sendsMessage() {
         String msg = tfMessage.getText();
         log.setText(msg);
         tfMessage.setText("");
-    }
+        try {
+            fos.write(msg.getBytes());
+            fos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
 
 }
 
