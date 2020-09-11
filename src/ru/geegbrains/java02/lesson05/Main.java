@@ -1,5 +1,7 @@
 package ru.geegbrains.java02.lesson05;
 
+import java.util.Arrays;
+
 /**
  * 1. Необходимо написать два метода, которые делают следующее:
  * 1) Создают одномерный длинный массив, например:
@@ -41,11 +43,12 @@ package ru.geegbrains.java02.lesson05;
  * <p>
  * Для второго метода замеряете время разбивки массива на 2, просчета каждого из двух массивов и склейки.
  */
-public class Main {
+public class Main extends Thread {
+    private final static Object monitor = new Object();
     static final int size = 10000000;
     static final int h = size / 2;
 
-
+    // просто бежит по массиву и вычисляет значения
     public static void method1() {
         float[] arr = new float[size];
         long a = System.currentTimeMillis();
@@ -71,24 +74,54 @@ public class Main {
         }
 
         //деления одного массива на два:
+        System.currentTimeMillis();
         System.arraycopy(arr, 0, arr2, 0, h);
         System.arraycopy(arr, h, arr3, 0, h);
+        calculatesValues(arr2);
+
+        calculatesValues(arr3);
 
         // обратная склейки:
+        System.currentTimeMillis();
         System.arraycopy(arr2, 0, arr, 0, h);
         System.arraycopy(arr3, 0, arr, h, h);
 
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
-        }
         System.currentTimeMillis();
         System.out.print("method2: ");
         System.out.println(System.currentTimeMillis() - a);
     }
 
+    private static void calculatesValues(float[] arr) {
+        System.out.println("Hello from " + Thread.currentThread().getName());
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+                }
+            }
+        };
+        new Thread(r).start();
+    }
+
     public static void main(String[] args) {
+        Main thread1 = new Main();
+        Main thread2 = new Main();
+
         method1();
         method2();
+        thread1.start();
+
+        try {
+            thread1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        thread2.start();
+
     }
+
+
 }
 
